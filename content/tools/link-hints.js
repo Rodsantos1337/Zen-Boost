@@ -19,6 +19,7 @@
       const badgeMap = new Map();
       let typed = "";
       let tick = null;
+      let clickTimer = null;
       let deactivate;
 
       for (let i = 0; i < elements.length; i++) {
@@ -90,16 +91,26 @@
         }
 
         if (matchCount === 1 && typed === lastMatchHint) {
-          let target = null;
-          for (const [el, badge] of badgeMap) {
-            if (badge.dataset.hint === typed) {
-              target = el;
-              break;
-            }
+          if (!clickTimer) {
+            clickTimer = setTimeout(() => {
+              clickTimer = null;
+              let target = null;
+              for (const [el, badge] of badgeMap) {
+                if (badge.dataset.hint === typed) {
+                  target = el;
+                  break;
+                }
+              }
+              deactivate();
+              if (target) {
+                try { target.click(); } catch (_) {}
+              }
+            }, 100);
           }
-          deactivate();
-          if (target) {
-            try { target.click(); } catch (_) {}
+        } else {
+          if (clickTimer) {
+            clearTimeout(clickTimer);
+            clickTimer = null;
           }
         }
       }
@@ -124,6 +135,7 @@
         document.removeEventListener("visibilitychange", onVisibilityChange);
         document.removeEventListener("keydown", handleKey, { capture: true });
         if (tick) cancelAnimationFrame(tick);
+        if (clickTimer) clearTimeout(clickTimer);
         for (const badge of badgeMap.values()) {
           badge.remove();
         }
