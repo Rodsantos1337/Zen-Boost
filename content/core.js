@@ -95,6 +95,38 @@ function injectZenBoostStyles() {
     .zb-badge.inactive {
       opacity: 0.15;
     }
+    .zb-badge.zb-hidden {
+      display: none;
+    }
+    .zb-badge {
+      animation: zb-pop 100ms ease-out both;
+    }
+    @keyframes zb-pop {
+      from {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .zb-indicator {
+      position: fixed;
+      bottom: 8px;
+      right: 8px;
+      z-index: 2147483647;
+      background: #374145;
+      color: #d3c6aa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.75rem;
+      padding: 0.25em 0.5em;
+      border-radius: 0.25rem;
+      border: 1px solid #a7c080;
+      pointer-events: none;
+      user-select: none;
+    }
   `;
   document.head.appendChild(style);
 }

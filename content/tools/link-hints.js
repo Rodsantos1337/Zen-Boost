@@ -18,6 +18,7 @@
       const hints = utils.generateHints(elements.length);
       const badgeMap = new Map();
       let typed = "";
+      let tick = null;
       let deactivate;
 
       for (let i = 0; i < elements.length; i++) {
@@ -33,6 +34,22 @@
         badge.style.top = `${rect.top}px`;
         document.body.appendChild(badge);
         badgeMap.set(el, badge);
+      }
+
+      function repositionBadges() {
+        if (tick) cancelAnimationFrame(tick);
+        tick = requestAnimationFrame(() => {
+          for (const [el, badge] of badgeMap) {
+            const rect = el.getBoundingClientRect();
+            if (utils.isVisible(el)) {
+              badge.style.left = `${rect.left}px`;
+              badge.style.top = `${rect.top}px`;
+              badge.classList.remove("zb-hidden");
+            } else {
+              badge.classList.add("zb-hidden");
+            }
+          }
+        });
       }
 
       function handleKey(e) {
@@ -67,6 +84,7 @@
 
         if (matchCount === 0) {
           typed = typed.slice(0, -1);
+          repositionBadges();
           flashMessage("No match");
           return;
         }
@@ -75,20 +93,37 @@
           deactivate();
           for (const [el, badge] of badgeMap) {
             if (badge.dataset.hint === typed) {
-              el.click();
+              try { el.click(); } catch (_) {}
               break;
             }
           }
         }
       }
 
+      function onVisibilityChange() {
+        if (document.hidden) deactivate();
+      }
+
+      window.addEventListener("scroll", repositionBadges, { passive: true });
+      window.addEventListener("resize", repositionBadges, { passive: true });
+      document.addEventListener("visibilitychange", onVisibilityChange);
       document.addEventListener("keydown", handleKey, { capture: true });
 
+      const indicator = document.createElement("div");
+      indicator.className = "zb-indicator";
+      indicator.textContent = "[LINK-HINTS]";
+      document.body.appendChild(indicator);
+
       deactivate = function () {
+        window.removeEventListener("scroll", repositionBadges);
+        window.removeEventListener("resize", repositionBadges);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
         document.removeEventListener("keydown", handleKey, { capture: true });
+        if (tick) cancelAnimationFrame(tick);
         for (const badge of badgeMap.values()) {
           badge.remove();
         }
+        if (indicator.parentNode) indicator.remove();
         badgeMap.clear();
         typed = "";
       };
