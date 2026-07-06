@@ -1,5 +1,6 @@
 const TOOL_MAP = {
   "link-hints": "link-hints",
+  "focus-search": "focus-search",
 };
 
 chrome.commands.onCommand.addListener(async (command) => {

@@ -12,16 +12,27 @@
         "mac": "Alt+F"
       },
       "description": "Activate link hints on the current page"
+    },
+    "focus-search": {
+      "suggested_key": {
+        "default": "Alt+G",
+        "mac": "Alt+G"
+      },
+      "description": "Focus the page search input"
     }
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/tools/link-hints.js", "content/core.js"]
+      "js": ["content/tools/link-hints.js", "content/tools/focus-search.js", "content/core.js"]
     }
   ],
   "background": {
     "scripts": ["background.js"]
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Zen Boost"
   },
   "icons": {
     "128": "icons/icon128.png"
