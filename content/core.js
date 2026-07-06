@@ -63,6 +63,44 @@ globalThis.__zenBoostUtils = {
   isVisible,
 };
 
+function injectZenBoostStyles() {
+  if (document.getElementById("zen-boost-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "zen-boost-styles";
+  style.textContent = `
+    .zb-badge {
+      all: unset;
+      position: fixed;
+      z-index: 2147483647;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1;
+      padding: 0.1em 0.35em;
+      border-radius: 0.25rem;
+      background: #374145;
+      color: #d3c6aa;
+      border: 1px solid #374145;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      user-select: none;
+      transition: opacity 80ms ease;
+      opacity: 1;
+    }
+    .zb-badge.active {
+      border-color: #a7c080;
+    }
+    .zb-badge.inactive {
+      opacity: 0.15;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+injectZenBoostStyles();
+
 const activeTools = new Map();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
