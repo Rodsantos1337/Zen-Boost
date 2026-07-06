@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Zen Boost",
+  "version": "0.1.0",
+  "description": "Keyboard-first browser navigation. Tag, type, go.",
+  "permissions": ["activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "commands": {
+    "link-hints": {
+      "suggested_key": {
+        "default": "Alt+F",
+        "mac": "Alt+F"
+      },
+      "description": "Activate link hints on the current page"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/tools/link-hints.js", "content/core.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "icons": {
+    "128": "icons/icon128.png"
+  }
+}
