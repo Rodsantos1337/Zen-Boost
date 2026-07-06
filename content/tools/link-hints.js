@@ -90,12 +90,16 @@
         }
 
         if (matchCount === 1 && typed === lastMatchHint) {
-          deactivate();
+          let target = null;
           for (const [el, badge] of badgeMap) {
             if (badge.dataset.hint === typed) {
-              try { el.click(); } catch (_) {}
+              target = el;
               break;
             }
+          }
+          deactivate();
+          if (target) {
+            try { target.click(); } catch (_) {}
           }
         }
       }
